@@ -148,8 +148,15 @@ transito['Semana Llegada'] = transito['Fecha Llegada Final'].dt.isocalendar().we
 # %%
 transito['AUX'] = transito['Documento compras'] + transito['Material']
 
+print(transito.dtypes)
+print(transito.isna().sum())
+
 # %%
-transito_final = transito[['AUX', 'Cantidad_transito','Fecha Llegada Final']]
+transito_final = transito[(transito['Estado'].isin(['Facturado', 'Back Order', 'OC Fabrica'])) &
+    (transito['Cantidad_transito'] > 0)][['AUX', 'Cantidad_transito','Fecha Llegada Final']]
+
+
+
 
 # %%
 import pandas as pd
@@ -171,7 +178,7 @@ file_path = asksaveasfilename(
 
 # Guardar si se seleccionó una ruta
 if file_path:
-    transito.to_excel(file_path, index=False)
+    transito_final.to_excel(file_path, index=False)
     print(f"Archivo guardado en: {file_path}")
 else:
     print("Guardado cancelado por el usuario.")
